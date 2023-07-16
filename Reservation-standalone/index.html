@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<head>
+    <title>Reservation</title>
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/style.css">
+     <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Two+Tone" rel="stylesheet">
+    <!-- Vue -->
+    <script src="js/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
+    <script src="js/whyUs.js"></script>
+    <script src="js/contact.js"></script>
+
+</head>
+<body>
+    <div id="main">
+        
+        <nav>
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo center">Reservation</a>
+                <a href="#" data-target="slide-out" @click="animationsCon = true" class="sidenav-trigger show-on-large left">
+                    <i class="button material-icons">menu</i>
+                </a>
+            </div>
+        </nav>
+
+        <ul id="slide-out" class="sidenav">
+            <li><div class="user-view">
+                <div class="background">
+                    <img src="img/pawon.jpeg">
+                </div>
+                <a v-if="animationsCon" href="#user"><img class="circle animated rotateIn" src="img/omah.jpg"></a>
+                <a v-if="animationsCon" href="#name"><span class="white-text name animated fadeInRight">Almada</span></a>
+                <a v-if="animationsCon" href="#email"><span class="white-text email animated fadeInRight">demo@gmail.com</span></a>
+            </div></li>
+
+            <li v-for="link in links">
+                <a @click="changeContent" href="javascript:;" :id="link.id" v-if="animationsCon" class="waves-effect links animated fadeInLeft">
+                    <i class="material-icons-two-tone">{{ link.icon }}</i>
+                    {{ link.title }}
+                </a>
+            </li>
+
+            <span><a @click="animationsCon = false" href="javascript:;" class="sidenav-close"></a></span>
+
+        </ul>
+        
+        <section class="content">
+            <whyus :about="about" :id="links[2]"></whyus>
+            <contact :id="links[3].id"></contact>
+        </section>
+                
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.sidenav');
+        var instances = M.Sidenav.init(elems, {});
+    });
+    Vue.http.headers.common['Access-Control-Allow-Origin'] = true;
+    Vue.http.headers.common['Access-Control-Allow-Origin'] = '*';
+    var app = new Vue({
+        el: '#main',
+        data:{
+            links: [
+            {title:"Reservation", icon:"alarm", id: "linkone"},
+            {title:"Price", icon:"attach_money", id: "linktwo"},
+            {title:"Why Us", icon:"assignment", id: "linkthree"},
+            {title:"Contact Us", icon:"contacts", id: "linkfour"}
+            ],
+            animationsCon:false,
+            about: []
+        },
+        
+
+        methods :{
+            changeContent(){
+                document.getElementsByClassName('sidenav-close')[0].click();
+            }
+        },
+        created(){
+            //Fetch from firebase
+            this.$http.get('/whyus').then(function(data){
+                this.about= data.body;
+                console.log(this.about);
+            })
+        }
+
+    });
+    </script>
+</body>
